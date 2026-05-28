@@ -139,11 +139,11 @@ const CONFIG = {
     "BRANCH_PASSWORD": "",
     "EU_ID_HINT": "Enter your ID",
     "DRIVE_API_KEY": "AIzaSyAE2yFTE-lNNp3rN1E0DXyBhS27ri4fl1c",
-    "DRIVE_FOLDER_ID": "1Hg7vucD7w5fetHJqiMVJxwAcRRIuz23d",
+    "DRIVE_FOLDER_ID": "1-Yn5BngRlBx4VMXmkwOS52epaya8Fy0f",
     "LOGO_URL": "logo_10001.png",
     "HEADER_TEXT": "Workspace Archive",
     "FOOTER_TEXT": "© 2026 All Rights Reserved",
-    "PRIMARY_COLOR": "#9b021a",
+    "PRIMARY_COLOR": "#750003",
     "FILES": []
 }
 // LOGIN_MODE:
@@ -234,10 +234,17 @@ function loadFiles(userId) {
     }
     document.getElementById('loadingMsg').classList.remove('hidden');
     document.getElementById('filesTableWrapper').style.display = 'none';
-    const parentId = CONFIG.DRIVE_FOLDER_ID;
     const apiKey   = CONFIG.DRIVE_API_KEY;
-    // Use folder from URL param, fallback to CONFIG folder
-    const folderId = _urlFolder || parentId;
+    // Use folder from URL param only — never fallback to branch root
+    const folderId = _urlFolder;
+    if (!folderId) {
+        document.getElementById('loadingMsg').classList.add('hidden');
+        document.getElementById('filesTableWrapper').style.display = 'none';
+        document.getElementById('emptyState').classList.remove('hidden');
+        document.getElementById('emptyState').innerText = 'No files available yet';
+        document.getElementById('fileCount').innerText = 0;
+        return;
+    }
     fetchFilesFromFolder(folderId, apiKey);
 }
 
